@@ -1,4 +1,16 @@
+"""
+Authors: David Malik, Bryce Thompson, Atlee Hasson
+Project - IoT Using GPS, Data Visualization, and Anomaly Detection
+Checkpoint 01
+"""
+
+
 def emit_header(fp_out):
+    """
+    Writes out the header of the KML file
+    :param fp_out: file to write to
+    :return: None
+    """
     fp_out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
     fp_out.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n")
     fp_out.write("  <Document>\n")
@@ -26,11 +38,22 @@ def emit_header(fp_out):
     fp_out.write("        <coordinates>  ")
 
 def emit_coordinates(fp_out, lines):
+    """
+    Writes out coordinates based on the given .txt information
+    :param fp_out: file to write to
+    :param lines: lines of data containing coordinates
+    :return: None
+    """
     for item in lines:
         fp_out.write(str(item[0]) + "," + str(item[1]) + "," + str(item[2]) + "\n")
 
 
 def emit_trailer(fp_out):
+    """
+    Writes out the trailer of the KML file
+    :param fp_out: file to write to
+    :return: None
+    """
     fp_out.write("        </coordinates>\n")
     fp_out.write("      </LineString>\n")
     fp_out.write("    </Placemark>\n")
@@ -39,6 +62,11 @@ def emit_trailer(fp_out):
 
 
 def read_and_parse(filename):
+    """
+    Parses lines of the given .txt file
+    :param filename: name of the file to parse
+    :return: array of strings from the lines of the given file
+    """
     file = open(filename, "r")
 
     # Remove the initial 5 lines
@@ -54,6 +82,11 @@ def read_and_parse(filename):
     return stripped_list
 
 def clean_lines(lines):
+    """
+    Takes lines of GPS data and extracts the information pertinent to writing a KML file
+    :param lines: lines of GPS data
+    :return: array of GPS data to be written to the KML file
+    """
     clean = []
     for value in lines:
         temp = value.split(",")
@@ -66,6 +99,11 @@ def clean_lines(lines):
 
 
 def calculate_lat_long(clean):
+    """
+    Calculates the latitude and longitude for each line of GPS data
+    :param clean: cleaned lines of GPS data
+    :return: array of tuples containing coordinates and speeds
+    """
     final = []
     for value in clean:
         hold_num = float(value[0]) // 100
@@ -92,6 +130,10 @@ def calculate_lat_long(clean):
     return final
 
 def main():
+    """
+    Reads the given file of GPS data and created a KML file readable by Google Earth
+    :return:
+    """
     raw_lines = read_and_parse("2021_09_08__181321_gps_JERAMIAS_and_BACK.txt")
     clean = clean_lines(raw_lines)
     final = calculate_lat_long(clean)
