@@ -18,86 +18,60 @@ class Point:
 
 
 def emit_header(fp_out):
-    """
-    Writes out the header of the KML file
-    :param fp_out: file to write to
-    :return: None
-    """
     fp_out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
     fp_out.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n")
     fp_out.write("  <Document>\n")
     fp_out.write("    <name>Paths</name>\n")
     fp_out.write("    <description>Examples of paths. Note that the tessellate tag is by default\n")
     fp_out.write("      set to 0. If you want to create tessellated lines, they must be authored\n")
-    fp_out.write("      (or edited) directly in KML.</description>\n")
+    fp_out.write("      (or edited) directly in KML.</description>\n")\
 
+def emit_styles(fp_out):
+    fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>7f00ffff</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>7f00ff00</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
+    fp_out.write("    <Style id=\"blueLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>ffff0000</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>ffff0000</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
 
-#def emit_style(fp_out, hex):
-#    fp_out.write("    <Style id=\"greenLineGreenPoly\">\n")
-#    fp_out.write("      <LineStyle>\n")
-#    fp_out.write("        <color>" + str(hex) + "</color>\n")
-#    fp_out.write("        <width>2</width>\n")
-#    fp_out.write("      </LineStyle>\n")
-#    fp_out.write("      <PolyStyle>\n")
-#    fp_out.write("        <color>" + str(hex) + "</color>\n")
-#    fp_out.write("      </PolyStyle>\n")
-#    fp_out.write("    </Style>\n")
-
-
-def emit_coordinates(fp_out, lines):
-    for item in lines:
-        fp_out.write(str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "\n")
-
-
-def emit_close_placemark(fp_out):
-    fp_out.write("        </coordinates>\n")
-    fp_out.write("      </LineString>\n")
-    fp_out.write("    </Placemark>\n")
-
-
-def emit_open_placemark(fp_out, color):
+def emit_placemarker_start(fp_out, style):
     fp_out.write("    <Placemark>\n")
     fp_out.write("      <name>Absolute Extruded</name>\n")
     fp_out.write("      <description>Transparent green wall with yellow outlines</description>\n")
-    fp_out.write("      <styleUrl>#greenLineGreenPoly</styleUrl>\n")
+    fp_out.write("      <styleUrl>#" + style + "</styleUrl>\n")
     fp_out.write("      <LineString>\n")
-    fp_out.write("        <color>" + str(color) + "</color>\n")
     fp_out.write("        <extrude>1</extrude>\n")
     fp_out.write("        <tessellate>1</tessellate>\n")
     fp_out.write("        <altitudeMode>absolute</altitudeMode>\n")
     fp_out.write("        <coordinates>  ")
 
-
 def emit_coordinates(fp_out, lines):
-    """
-    Writes out coordinates based on the given .txt information
-    :param fp_out: file to write to
-    :param lines: lines of data containing coordinates
-    :return: None
-    """
     for item in lines:
         fp_out.write(str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "\n")
 
-
-def emit_trailer(fp_out):
-    """
-    Writes out the trailer of the KML file
-    :param fp_out: file to write to
-    :return: None
-    """
+def emit_placemarker_end(fp_out):
     fp_out.write("        </coordinates>\n")
     fp_out.write("      </LineString>\n")
     fp_out.write("    </Placemark>\n")
+
+def emit_trailer(fp_out):
     fp_out.write("  </Document>\n")
     fp_out.write("</kml>\n")
 
 
 def read_and_parse(filename):
-    """
-    Parses lines of the given .txt file
-    :param filename: name of the file to parse
-    :return: array of strings from the lines of the given file
-    """
     file = open(filename, "r")
 
     # Remove the initial 5 lines
@@ -114,28 +88,18 @@ def read_and_parse(filename):
 
 
 def clean_lines(lines):
-    """
-    Takes lines of GPS data and extracts the information pertinent to writing a KML file
-    :param lines: lines of GPS data
-    :return: array of GPS data to be written to the KML file
-    """
     clean = []
     for value in lines:
         temp = value.split(",")
         RMC = value.count("GPRMC")
         GGA = value.count("GPGGA")
         if RMC == 1 and GGA == 0:
-            clean.append((temp[3], temp[4], temp[5], temp[6], temp[7], temp[8]))
+            clean.append((temp[3], temp[4], temp[5], temp[6], temp[7]))
     del lines
     return clean
 
 
 def calculate_lat_long(clean):
-    """
-    Calculates the latitude and longitude for each line of GPS data
-    :param clean: cleaned lines of GPS data
-    :return: array of tuples containing coordinates and speeds
-    """
     final = []
     for value in clean:
         hold_num = float(value[0]) // 100
@@ -161,7 +125,6 @@ def calculate_lat_long(clean):
     del clean
     return final
 
-
 def get_distance(pos_1, pos_2):
     lat_diff = abs(float(pos_1[0]) - float(pos_2[0])) * 364000
     long_diff = abs(float(pos_1[1]) - float(pos_2[1])) * 288200
@@ -173,36 +136,33 @@ def get_degrees(pos_1, pos_2):
 
 
 def main():
-    """
-    Reads the given file of GPS data and created a KML file readable by Google Earth
-    :return:
-    """
     raw_lines = read_and_parse("2021_09_08__181321_gps_JERAMIAS_and_BACK.txt")
     clean = clean_lines(raw_lines)
     final = calculate_lat_long(clean)
 
-    new_final = []
-    new_final_2 = []
-
+    nf = []
+    nf2 = []
     temp = 0
-    while temp < len(final) / 2:
-        new_final.append(final[temp])
-        temp += 1
+    while temp < len(final) /2:
+        nf.append(final[temp])
+        temp+=1
     while temp < len(final):
-        new_final_2.append(final[temp])
-        temp += 1
+        nf2.append(final[temp])
+        temp+=1
 
     fp_out = open("Test_Output.kml", "w")
 
     emit_header(fp_out)
+    emit_styles(fp_out)
 
-    emit_open_placemark(fp_out, COLOR_MAGENTA)
-    emit_coordinates(fp_out, new_final)
-    emit_close_placemark(fp_out)
+    emit_placemarker_start(fp_out, "yellowLineGreenPoly")
+    emit_coordinates(fp_out, nf)
+    emit_placemarker_end(fp_out)
 
-    emit_open_placemark(fp_out, COLOR_RED)
-    emit_coordinates(fp_out, new_final_2)
-    emit_close_placemark(fp_out)
+    emit_placemarker_start(fp_out, "blueLineGreenPoly")
+    emit_coordinates(fp_out, nf2)
+    emit_placemarker_end(fp_out)
+
     emit_trailer(fp_out)
 
 
