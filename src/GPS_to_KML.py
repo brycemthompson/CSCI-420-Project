@@ -1,5 +1,10 @@
 from math import sqrt
 
+# Constants
+COLOR_RED = "ff0000"
+COLOR_MAGENTA = "ff00ff"
+
+
 class Point:
     def __init__(self, latitude, longitude, speed, angle, color):
         self.latitude = latitude
@@ -10,8 +15,6 @@ class Point:
 
     def change_color(self, color):
         self.color = color
-
-DEFAULT_COLOR = "BLACK"
 
 
 def emit_header(fp_out):
@@ -29,16 +32,16 @@ def emit_header(fp_out):
     fp_out.write("      (or edited) directly in KML.</description>\n")
 
 
-def emit_style(fp_out, hex):
-    fp_out.write("    <Style id=\"greenLineGreenPoly\">\n")
-    fp_out.write("      <LineStyle>\n")
-    fp_out.write("        <color>" + str(hex) + "</color>\n")
-    fp_out.write("        <width>2</width>\n")
-    fp_out.write("      </LineStyle>\n")
-    fp_out.write("      <PolyStyle>\n")
-    fp_out.write("        <color>" + str(hex) + "</color>\n")
-    fp_out.write("      </PolyStyle>\n")
-    fp_out.write("    </Style>\n")
+#def emit_style(fp_out, hex):
+#    fp_out.write("    <Style id=\"greenLineGreenPoly\">\n")
+#    fp_out.write("      <LineStyle>\n")
+#    fp_out.write("        <color>" + str(hex) + "</color>\n")
+#    fp_out.write("        <width>2</width>\n")
+#    fp_out.write("      </LineStyle>\n")
+#    fp_out.write("      <PolyStyle>\n")
+#    fp_out.write("        <color>" + str(hex) + "</color>\n")
+#    fp_out.write("      </PolyStyle>\n")
+#    fp_out.write("    </Style>\n")
 
 
 def emit_coordinates(fp_out, lines):
@@ -51,16 +54,19 @@ def emit_close_placemark(fp_out):
     fp_out.write("      </LineString>\n")
     fp_out.write("    </Placemark>\n")
 
-def emit_open_placemark(fp_out, hex):
+
+def emit_open_placemark(fp_out, color):
     fp_out.write("    <Placemark>\n")
     fp_out.write("      <name>Absolute Extruded</name>\n")
     fp_out.write("      <description>Transparent green wall with yellow outlines</description>\n")
     fp_out.write("      <styleUrl>#greenLineGreenPoly</styleUrl>\n")
     fp_out.write("      <LineString>\n")
+    fp_out.write("        <color>" + str(color) + "</color>\n")
     fp_out.write("        <extrude>1</extrude>\n")
     fp_out.write("        <tessellate>1</tessellate>\n")
     fp_out.write("        <altitudeMode>absolute</altitudeMode>\n")
     fp_out.write("        <coordinates>  ")
+
 
 def emit_coordinates(fp_out, lines):
     """
@@ -70,7 +76,7 @@ def emit_coordinates(fp_out, lines):
     :return: None
     """
     for item in lines:
-        fp_out.write(str(item[0]) + "," + str(item[1]) + "," + str(item[2]) + "\n")
+        fp_out.write(str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "\n")
 
 
 def emit_trailer(fp_out):
@@ -106,6 +112,7 @@ def read_and_parse(filename):
         stripped_list.append(value.strip())
     return stripped_list
 
+
 def clean_lines(lines):
     """
     Takes lines of GPS data and extracts the information pertinent to writing a KML file
@@ -135,7 +142,7 @@ def calculate_lat_long(clean):
         degrees = float(value[0]) % 100
         degrees = degrees / 60
 
-        if(value[1] == "N"):
+        if value[1] == "N":
             long = str(hold_num + degrees)
         else:
             long = "-" + str(hold_num + degrees)
@@ -144,12 +151,12 @@ def calculate_lat_long(clean):
         degrees = float(value[2]) % 100
         degrees = degrees / 60
 
-        if(value[3] == "E"):
+        if value[3] == "E":
             lat = str(hold_num + degrees)
         else:
             lat = "-" + str(hold_num + degrees)
 
-        final.append(Point(lat, long, value[4], value[5], DEFAULT_COLOR))
+        final.append(Point(lat, long, value[4], value[5], COLOR_MAGENTA))
 
     del clean
     return final
@@ -189,12 +196,11 @@ def main():
 
     emit_header(fp_out)
 
-
-    emit_open_placemark(fp_out, "ffff00ff")
+    emit_open_placemark(fp_out, COLOR_MAGENTA)
     emit_coordinates(fp_out, new_final)
     emit_close_placemark(fp_out)
 
-    emit_open_placemark(fp_out, "ffff0000")
+    emit_open_placemark(fp_out, COLOR_RED)
     emit_coordinates(fp_out, new_final_2)
     emit_close_placemark(fp_out)
     emit_trailer(fp_out)
