@@ -27,13 +27,13 @@ def emit_header(fp_out):
     fp_out.write("      (or edited) directly in KML.</description>\n")\
 
 def emit_styles(fp_out):
-    fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
+    fp_out.write("    <Style id=\"greenLineGreenPoly\">\n")
     fp_out.write("      <LineStyle>\n")
-    fp_out.write("        <color>7f00ffff</color>\n")
+    fp_out.write("        <color>5014F032</color>\n")
     fp_out.write("        <width>4</width>\n")
     fp_out.write("      </LineStyle>\n")
     fp_out.write("      <PolyStyle>\n")
-    fp_out.write("        <color>7f00ff00</color>\n")
+    fp_out.write("        <color>5014F032</color>\n")
     fp_out.write("      </PolyStyle>\n")
     fp_out.write("    </Style>\n")
     fp_out.write("    <Style id=\"blueLineGreenPoly\">\n")
@@ -43,6 +43,15 @@ def emit_styles(fp_out):
     fp_out.write("      </LineStyle>\n")
     fp_out.write("      <PolyStyle>\n")
     fp_out.write("        <color>ffff0000</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
+    fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>5014F0E6</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>5014F0E6</color>\n")
     fp_out.write("      </PolyStyle>\n")
     fp_out.write("    </Style>\n")
 
@@ -94,7 +103,7 @@ def clean_lines(lines):
         RMC = value.count("GPRMC")
         GGA = value.count("GPGGA")
         if RMC == 1 and GGA == 0:
-            clean.append((temp[3], temp[4], temp[5], temp[6], temp[7]))
+            clean.append((temp[3], temp[4], temp[5], temp[6], temp[7], temp[8]))
     del lines
     return clean
 
@@ -126,13 +135,18 @@ def calculate_lat_long(clean):
     return final
 
 def get_distance(pos_1, pos_2):
-    lat_diff = abs(float(pos_1[0]) - float(pos_2[0])) * 364000
-    long_diff = abs(float(pos_1[1]) - float(pos_2[1])) * 288200
-    return sqrt((lat_diff * lat_diff) + (long_diff + long_diff))
+    lat_diff = abs(float(pos_1.latitude) - float(pos_2.latitude)) * 364000
+    long_diff = abs(float(pos_1.longitude) - float(pos_2.longitude)) * 288200
+    return long_diff + lat_diff
+    #return sqrt((lat_diff * lat_diff) + (long_diff + long_diff))
 
 
 def get_degrees(pos_1, pos_2):
-    return abs((float(pos_1[3]) - float(pos_2[3]) + 180 + 360) % 360 - 180)
+    temp = (float(pos_1.angle) - float(pos_2.angle) + 180 + 360) % 360 - 180
+    if temp >= 0:
+        return (abs(temp), "left")
+    else:
+        return  (abs(temp), "right")
 
 
 def main():
@@ -141,27 +155,52 @@ def main():
     final = calculate_lat_long(clean)
 
     nf = []
-    nf2 = []
-    temp = 0
-    while temp < len(final) /2:
-        nf.append(final[temp])
-        temp+=1
-    while temp < len(final):
-        nf2.append(final[temp])
-        temp+=1
+    not_turn = []
+    idx = 0
+    while idx < len(final):
+        idx2 = idx + 1
+        while idx2 < len(final):
+            pos1 = final[idx]
+            pos2 = final[idx2]
+            if get_distance(pos1, pos2) > 200:
+                result = get_degrees(pos1, pos2)
+                if result[0] > 65:
+                    temp_array = final[idx-1:idx2+1]
+                    nf.append((not_turn, "not"))
+                    nf.append((temp_array, result[1]))
+                    not_turn = []
+                    idx = idx2
+                    idx2 = idx - 1
+                else:
+                    not_turn.append(final[idx])
+                    idx+=1
+            idx2+=1
+
+        if idx2 >= len(final):
+            idx = idx2
+        idx += 1
+    if not_turn != []:
+        nf.append((not_turn, "not"))
 
     fp_out = open("Test_Output.kml", "w")
 
     emit_header(fp_out)
     emit_styles(fp_out)
 
-    emit_placemarker_start(fp_out, "yellowLineGreenPoly")
-    emit_coordinates(fp_out, nf)
-    emit_placemarker_end(fp_out)
+    for item in nf:
+        if item[1] == "not":
+            emit_placemarker_start(fp_out, "blueLineGreenPoly")
+            emit_coordinates(fp_out, item[0])
+            emit_placemarker_end(fp_out)
+        elif item[1] == "right":
+            emit_placemarker_start(fp_out, "yellowLineGreenPoly")
+            emit_coordinates(fp_out, item[0])
+            emit_placemarker_end(fp_out)
+        elif item[1] == "left":
+            emit_placemarker_start(fp_out, "greenLineGreenPoly")
+            emit_coordinates(fp_out, item[0])
+            emit_placemarker_end(fp_out)
 
-    emit_placemarker_start(fp_out, "blueLineGreenPoly")
-    emit_coordinates(fp_out, nf2)
-    emit_placemarker_end(fp_out)
 
     emit_trailer(fp_out)
 

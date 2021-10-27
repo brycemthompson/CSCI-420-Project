@@ -5,13 +5,13 @@
     <description>Examples of paths. Note that the tessellate tag is by default
       set to 0. If you want to create tessellated lines, they must be authored
       (or edited) directly in KML.</description>
-    <Style id="yellowLineGreenPoly">
+    <Style id="greenLineGreenPoly">
       <LineStyle>
-        <color>7f00ffff</color>
+        <color>5014F032</color>
         <width>4</width>
       </LineStyle>
       <PolyStyle>
-        <color>7f00ff00</color>
+        <color>5014F032</color>
       </PolyStyle>
     </Style>
     <Style id="blueLineGreenPoly">
@@ -23,10 +23,19 @@
         <color>ffff0000</color>
       </PolyStyle>
     </Style>
+    <Style id="yellowLineGreenPoly">
+      <LineStyle>
+        <color>5014F0E6</color>
+        <width>4</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>5014F0E6</color>
+      </PolyStyle>
+    </Style>
     <Placemark>
       <name>Absolute Extruded</name>
       <description>Transparent green wall with yellow outlines</description>
-      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
       <LineString>
         <extrude>1</extrude>
         <tessellate>1</tessellate>
@@ -52,6 +61,18 @@
 -77.43768666666666,43.13848333333333,0.05
 -77.43768666666666,43.13848500000001,0.15
 -77.43768833333334,43.13848500000001,0.18
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.43768833333334,43.13848500000001,0.18
 -77.43768666666666,43.13848500000001,0.16
 -77.43768333333334,43.13848500000001,0.08
 -77.43768166666668,43.13848500000001,0.04
@@ -326,6 +347,18 @@
 -77.43900166666667,43.13905833333333,18.56
 -77.43904833333333,43.13908333333334,18.51
 -77.43909166666667,43.139108333333326,18.20
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.43909166666667,43.139108333333326,18.20
 -77.43913666666667,43.139133333333334,18.11
 -77.43918166666667,43.139158333333334,17.98
 -77.43922666666667,43.13918333333333,17.92
@@ -362,6 +395,18 @@
 -77.43950666666666,43.140391666666666,18.47
 -77.43949500000001,43.14043333333334,18.20
 -77.439485,43.14047166666666,17.73
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#greenLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.439485,43.14047166666666,17.73
 -77.43947499999999,43.14051166666666,17.47
 -77.439465,43.14055166666667,17.30
 -77.439455,43.14059166666666,17.23
@@ -391,6 +436,18 @@
 -77.43951333333332,43.14107833333334,13.54
 -77.43956166666666,43.141081666666665,15.10
 -77.439615,43.14108666666666,16.60
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.439615,43.14108666666666,16.60
 -77.43967333333333,43.14109333333334,18.32
 -77.43973666666668,43.14110000000001,19.62
 -77.43980166666667,43.14110666666667,20.52
@@ -406,6 +463,18 @@
 -77.44055333333334,43.14118333333332,24.26
 -77.44062833333334,43.141191666666664,23.19
 -77.44069666666665,43.14119833333333,21.73
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#greenLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44069666666665,43.14119833333333,21.73
 -77.44076166666667,43.14120333333334,20.28
 -77.44082333333334,43.1412,19.34
 -77.44087833333333,43.14118333333332,18.35
@@ -416,6 +485,18 @@
 -77.44110666666667,43.14106666666667,16.74
 -77.44113166666666,43.14102833333333,16.53
 -77.44115166666667,43.14098666666667,17.02
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44115166666667,43.14098666666667,17.02
 -77.44117166666666,43.140946666666665,17.63
 -77.44118833333333,43.140901666666664,18.47
 -77.44120500000001,43.140856666666664,19.33
@@ -524,6 +605,18 @@
 -77.44174833333334,43.13334666666666,27.42
 -77.44173333333333,43.133284999999994,27.29
 -77.44171833333333,43.13322333333334,26.88
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#greenLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44171833333333,43.13322333333334,26.88
 -77.44170333333334,43.13316666666666,25.09
 -77.44168833333333,43.13311333333333,23.81
 -77.441675,43.13306666666667,21.92
@@ -552,6 +645,30 @@
 -77.44151833333333,43.132795,9.39
 -77.44149166666666,43.13279166666666,9.31
 -77.44146333333333,43.13278833333334,9.31
+-77.441435,43.132785,9.25
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>          </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44146333333333,43.13278833333334,9.31
 -77.441435,43.132785,9.25
 -77.44140833333333,43.13278166666667,9.21
 -77.44138,43.132778333333334,9.17
@@ -588,6 +705,30 @@
 -77.44121833333334,43.13239,7.29
 -77.44121833333334,43.13237000000001,7.39
 -77.44121,43.132348333333326,8.03
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>          </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#greenLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44121833333334,43.13237000000001,7.39
+-77.44121,43.132348333333326,8.03
 -77.4412,43.13232333333334,8.96
 -77.44119,43.13229833333333,9.72
 -77.44118166666667,43.13227333333332,10.04
@@ -608,6 +749,30 @@
 -77.44101500000001,43.13199833333333,8.63
 -77.44099,43.131989999999995,8.65
 -77.44096333333333,43.131988333333325,8.59
+-77.44093666666666,43.131988333333325,8.58
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>          </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44096333333333,43.131988333333325,8.59
 -77.44093666666666,43.131988333333325,8.58
 -77.44091166666666,43.131989999999995,8.23
 -77.440895,43.132001666666675,6.63
@@ -4948,18 +5113,7 @@
 -77.44085833333334,43.132091666666675,0.01
 -77.44085833333334,43.132091666666675,0.00
 -77.44085833333334,43.132091666666675,0.01
-        </coordinates>
-      </LineString>
-    </Placemark>
-    <Placemark>
-      <name>Absolute Extruded</name>
-      <description>Transparent green wall with yellow outlines</description>
-      <styleUrl>#blueLineGreenPoly</styleUrl>
-      <LineString>
-        <extrude>1</extrude>
-        <tessellate>1</tessellate>
-        <altitudeMode>absolute</altitudeMode>
-        <coordinates>  -77.44085833333334,43.132091666666675,0.01
+-77.44085833333334,43.132091666666675,0.01
 -77.44085833333334,43.132091666666675,0.01
 -77.44085833333334,43.132091666666675,0.01
 -77.44085833333334,43.132091666666675,0.01
@@ -9449,6 +9603,30 @@
 -77.44110166666665,43.131541666666664,5.96
 -77.44112166666667,43.131545,5.49
 -77.44113666666667,43.13154666666666,4.70
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>          </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44112166666667,43.131545,5.49
+-77.44113666666667,43.13154666666666,4.70
 -77.44115333333333,43.131545,4.00
 -77.441165,43.131545,3.33
 -77.441175,43.13154666666666,3.08
@@ -9501,6 +9679,18 @@
 -77.441355,43.13187500000001,17.62
 -77.44136166666667,43.13191833333334,18.06
 -77.44137333333333,43.13196666666666,19.12
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44137333333333,43.13196666666666,19.12
 -77.44138333333333,43.132015,19.67
 -77.44139333333332,43.132065,20.11
 -77.441405,43.132115000000006,20.26
@@ -9635,6 +9825,18 @@
 -77.441065,43.140768333333334,25.91
 -77.44103666666666,43.14081833333333,24.71
 -77.44101166666665,43.14086833333334,23.35
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44101166666665,43.14086833333334,23.35
 -77.44098666666667,43.14091499999999,22.06
 -77.44096666666665,43.14095999999999,20.62
 -77.44094833333334,43.14100166666667,19.07
@@ -9659,6 +9861,18 @@
 -77.44073333333334,43.141148333333334,13.20
 -77.44068166666666,43.14115,14.89
 -77.44062000000001,43.141148333333334,17.46
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.44062000000001,43.141148333333334,17.46
 -77.440545,43.14114500000001,18.99
 -77.44047,43.14114333333334,20.47
 -77.440385,43.14113333333333,22.45
@@ -9670,6 +9884,18 @@
 -77.43991333333334,43.14106166666667,22.43
 -77.43984166666668,43.14105333333334,21.95
 -77.43977166666667,43.14104666666667,21.42
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.43977166666667,43.14104666666667,21.42
 -77.43970333333333,43.141040000000004,20.61
 -77.43963833333333,43.141034999999995,19.84
 -77.43957666666667,43.14103166666667,19.04
@@ -9685,6 +9911,18 @@
 -77.43928666666667,43.14089666666667,6.35
 -77.439305,43.14086,7.42
 -77.43932,43.14082666666666,8.44
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Absolute Extruded</name>
+      <description>Transparent green wall with yellow outlines</description>
+      <styleUrl>#blueLineGreenPoly</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>  -77.43932,43.14082666666666,8.44
 -77.439335,43.140795,9.69
 -77.43935,43.14076166666667,11.27
 -77.43936000000001,43.14073,12.23
@@ -9764,118 +10002,6 @@
 -77.43818333333334,43.13867333333333,14.18
 -77.438145,43.138655,14.23
 -77.438105,43.13864,14.22
--77.43806333333333,43.13863,13.97
--77.43801833333333,43.13862166666666,13.90
--77.43797166666667,43.138614999999994,13.70
--77.43792499999999,43.13860833333333,13.36
--77.437875,43.138603333333336,12.90
--77.43783666666667,43.1386,12.35
--77.4378,43.13859833333333,11.57
--77.437765,43.13859666666667,10.84
--77.437735,43.13859666666667,9.74
--77.43771,43.13859833333333,8.33
--77.43769,43.13859666666667,6.67
--77.437675,43.13859166666666,5.37
--77.43766666666667,43.13858833333334,4.09
--77.43765833333333,43.13858333333333,3.46
--77.43765499999999,43.138578333333335,3.22
--77.43765166666667,43.138571666666664,3.30
--77.437645,43.13856333333333,3.33
--77.43764333333334,43.138556666666666,3.25
--77.43764166666666,43.13855,3.14
--77.43764666666667,43.13854333333334,2.92
--77.43765666666667,43.13854,2.93
--77.43766000000001,43.13853166666666,2.94
--77.43766166666666,43.13852,2.98
--77.437665,43.138511666666666,3.46
--77.43766333333333,43.13850000000001,3.27
--77.437665,43.138495,3.08
--77.437665,43.138491666666674,2.70
--77.43766666666667,43.13848666666666,2.68
--77.43766666666667,43.13848333333333,2.36
--77.43766833333333,43.138478333333325,2.28
--77.43767,43.138475,1.61
--77.43767333333334,43.13847333333333,1.29
--77.43767333333334,43.13847333333333,1.03
--77.43767333333334,43.13847333333333,0.80
--77.43767333333334,43.138475,0.55
--77.43767333333334,43.13847666666667,0.45
--77.43767166666666,43.138478333333325,0.25
--77.43767166666666,43.13847666666667,0.15
--77.43767166666666,43.13847666666667,0.06
--77.43767166666666,43.13847666666667,0.08
--77.43767166666666,43.13847666666667,0.10
--77.43767166666666,43.13847666666667,0.10
--77.43767166666666,43.13847666666667,0.10
--77.43767166666666,43.13847666666667,0.08
--77.43767166666666,43.13847666666667,0.07
--77.43767166666666,43.13847666666667,0.04
--77.43767166666666,43.138475,0.01
--77.43767166666666,43.13847666666667,0.04
--77.43767166666666,43.13847666666667,0.06
--77.43767166666666,43.13847666666667,0.07
--77.43767166666666,43.13847666666667,0.02
--77.43767166666666,43.13847666666667,0.04
--77.43767166666666,43.13847666666667,0.06
--77.43767166666666,43.13847666666667,0.08
--77.43767166666666,43.138475,0.11
--77.43767166666666,43.138475,0.00
--77.43767166666666,43.138475,0.00
--77.43767166666666,43.138475,0.00
--77.43767166666666,43.138475,0.12
--77.43767166666666,43.138475,0.02
--77.43767166666666,43.138475,0.02
--77.43767166666666,43.138475,0.03
--77.43767166666666,43.138475,0.02
--77.43767333333334,43.138475,0.02
--77.43767333333334,43.138475,0.02
--77.43767333333334,43.138475,0.02
--77.43767333333334,43.138475,0.03
--77.43767333333334,43.138475,0.02
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.02
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.01
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
--77.43767333333334,43.138475,0.00
         </coordinates>
       </LineString>
     </Placemark>
