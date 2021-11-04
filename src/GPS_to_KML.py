@@ -151,7 +151,7 @@ def get_distance(pos_1, pos_2):
 def get_degrees(pos_1, pos_2):
     temp = (float(pos_1.angle) - float(pos_2.angle) + 180 + 360) % 360 - 180
     if temp >= 0:
-        return (abs(temp), "left")
+        return abs(temp), "left"
     else:
         return abs(temp), "right"
 
@@ -197,6 +197,7 @@ def main(argv):
             raw_lines = read_and_parse(arg)
             clean = clean_lines(raw_lines)
             list_of_lat_longs.append(calculate_lat_long(clean))
+            argIdx += 1
 
     for final in list_of_lat_longs:
         nf = []
