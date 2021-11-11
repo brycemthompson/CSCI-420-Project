@@ -181,12 +181,16 @@ def get_distance(pos_1, pos_2):
     return long_diff + lat_diff
 
 
-def get_degrees(pos_1, pos_2):
+def get_degrees(pos_1, pos_2, pos_3):
     temp = (float(pos_1.angle) - float(pos_2.angle) + 180 + 360) % 360 - 180
-    if temp >= 0:
-        return abs(temp), "left"
-    else:
-        return abs(temp), "right"
+    if float(pos_1.angle) < float(pos_3.angle) < float(pos_2.angle):
+        return temp, "right"
+    elif float(pos_2.angle) < float(pos_3.angle) < float(pos_1.angle):
+        return temp, "left"
+    elif float(pos_3.angle) > float(pos_1.angle) > float(pos_2.angle) or float(pos_1.angle) > float(pos_2.angle) > float(pos_3.angle):
+        return temp, "right"
+    elif float(pos_2.angle) > float(pos_1.angle) > float(pos_3.angle) or float(pos_3.angle) > float(pos_2.angle) > float(pos_1.angle):
+        return temp, "left"
 
 
 def get_time_diff(prev_point, second_point):
@@ -284,15 +288,20 @@ def main(argv):
             while idx2 < len(final):
                 pos1 = final[idx]
                 pos2 = final[idx2]
+                pos3 = final[int(idx/2)]
                 if get_distance(pos1, pos2) > 200:
-                    result = get_degrees(pos1, pos2)
-                    if result[0] > 65 and ((abs(float(pos1.latitude) - float(pos2.latitude)) * 364000) > 50 and (abs(float(pos1.longitude) - float(pos2.longitude)) * 288200 > 50)):
+                    result = get_degrees(pos1, pos2, pos3)
+                    if abs(result[0]) > 65 and ((abs(float(pos1.latitude) - float(pos2.latitude)) * 364000) > 50 and (abs(float(pos1.longitude) - float(pos2.longitude)) * 288200 > 50)):
                         temp_array = final[idx-1:idx2+1]
                         nf.append((not_turn, "not"))
                         nf.append((temp_array, result[1]))
                         not_turn = []
                         idx = idx2
                         idx2 = idx - 1
+                        print('\n' + result[1])
+                        print('pos1: ' + pos1.angle)
+                        print('pos2: ' + pos2.angle)
+                        print("diff: " + str(result[0]))
                     else:
                         not_turn.append(final[idx])
                         idx += 1
