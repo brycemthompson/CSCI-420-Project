@@ -20555,21 +20555,21 @@
             </IconStyle>
         </Style>
         <Point>
-            <coordinates>-77.43767,43.13844000000001,0.26</coordinates>
+            <coordinates>-77.44085,43.13210833333333,0.12</coordinates>
         </Point>
     </Placemark>
     <Placemark>
         <description>Red PIN for A Stop</description>
-        <Style id="normalPlacemark">
+        <Style id="normalCommon">
             <IconStyle>
-                <color>ff0000ff</color>
+                <color>ffff0000</color>
                     <Icon>
-                        <href>http://maps.google.com/mapfiles/kml/paddle/1.png</href>
+                        <href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>
                     </Icon>
             </IconStyle>
         </Style>
         <Point>
-            <coordinates>-77.44085,43.13210833333333,0.12</coordinates>
+            <coordinates>-77.43767,43.13844000000001,0.26</coordinates>
         </Point>
     </Placemark>
   </Document>

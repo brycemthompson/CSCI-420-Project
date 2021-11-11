@@ -83,7 +83,6 @@ def emit_placemarker_end(fp_out):
 
 
 def emit_stop_sign(fp_out, item):
-
     fp_out.write("    <Placemark>\n")
     fp_out.write("        <description>Red PIN for A Stop</description>\n")
     fp_out.write("        <Style id=\"normalPlacemark\">\n")
@@ -99,6 +98,22 @@ def emit_stop_sign(fp_out, item):
     fp_out.write("        </Point>\n")
     fp_out.write("    </Placemark>\n")
 
+
+def emit_common_sign(fp_out, item):
+    fp_out.write("    <Placemark>\n")
+    fp_out.write("        <description>Red PIN for A Stop</description>\n")
+    fp_out.write("        <Style id=\"normalCommon\">\n")
+    fp_out.write("            <IconStyle>\n")
+    fp_out.write("                <color>ffff0000</color>\n")
+    fp_out.write("                    <Icon>\n")
+    fp_out.write("                        <href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>\n")
+    fp_out.write("                    </Icon>\n")
+    fp_out.write("            </IconStyle>\n")
+    fp_out.write("        </Style>\n")
+    fp_out.write("        <Point>\n")
+    fp_out.write("            <coordinates>" + str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "</coordinates>\n")
+    fp_out.write("        </Point>\n")
+    fp_out.write("    </Placemark>\n")
 
 def emit_trailer(fp_out):
     fp_out.write("  </Document>\n")
@@ -174,21 +189,44 @@ def get_degrees(pos_1, pos_2):
         return abs(temp), "right"
 
 
-
 def get_time_diff(prev_point, second_point):
     return abs(float(second_point.time) - float(prev_point.time))
 
 
 def try_to_append(stops, second_point):
-    temp = True
+    temp = (True, None)
     for point in stops:
         dist = get_distance(point, second_point)
         if dist < 1000:
-            temp = False
+            temp = (False, point)
             break
-    if temp:
+    if temp[0]:
         stops.append(second_point)
+    return temp
 
+
+def is_stop_in_common_locs(stop, common_locs):
+    temp = (True, None)
+    for point in common_locs:
+        dist = get_distance(point, stop)
+        if dist < 1000:
+            temp = (False, point)
+            break
+    return temp
+
+
+def merge_stops(stops):
+    new_stops = []
+    common_locs = []
+    for item in stops:
+        for stop in item:
+            bool_1, point = is_stop_in_common_locs(stop, common_locs)
+            if bool_1:
+                bool_2, point = try_to_append(new_stops, stop)
+                if not bool_2:
+                    new_stops.remove(point)
+                    common_locs.append(point)
+    return new_stops, common_locs
 
 def main(argv):
 
@@ -238,6 +276,7 @@ def main(argv):
     nf = []
     stops = []
     for final in list_of_lat_longs:
+        temp_stops = []
         not_turn = []
         idx = 0
         while idx < len(final):
@@ -276,10 +315,11 @@ def main(argv):
                 # check time between second point and prev point
                 time_diff = get_time_diff(prev_point, second_point)
                 if time_diff >= 2:
-                    try_to_append(stops, second_point)
+                    try_to_append(temp_stops, second_point)
                 prev_point = current_point
                 second_point = current_point
             idx += 1
+        stops.append(temp_stops)
 
     fp_out = open(arguments[-1], "w")
 
@@ -300,8 +340,11 @@ def main(argv):
             emit_coordinates(fp_out, item[0])
             emit_placemarker_end(fp_out)
 
+    (stops, common_loc) = merge_stops(stops)
     for item in stops:
         emit_stop_sign(fp_out, item)
+    for item in common_loc:
+        emit_common_sign(fp_out, item)
 
     emit_trailer(fp_out)
 
