@@ -115,6 +115,7 @@ def emit_common_sign(fp_out, item):
     fp_out.write("        </Point>\n")
     fp_out.write("    </Placemark>\n")
 
+
 def emit_trailer(fp_out):
     fp_out.write("  </Document>\n")
     fp_out.write("</kml>\n")
@@ -138,12 +139,21 @@ def read_and_parse(filename):
 
 def clean_lines(lines):
     clean = []
+    missingValue = False
     for value in lines:
         temp = value.split(",")
         RMC = value.count("GPRMC")
         GGA = value.count("GPGGA")
         if RMC == 1 and GGA == 0:
-            clean.append((temp[3], temp[4], temp[5], temp[6], temp[7], temp[8], temp[1]))
+            # Loop through the elements of temp (the parsed lined)
+            for idx in range(0, len(temp)):
+                if temp[idx] is None:
+                    missingValue = True
+
+            # If we don't have any missing values, add the line to the cleaned list.
+            if not missingValue:
+                clean.append((temp[3], temp[4], temp[5], temp[6], temp[7], temp[8], temp[1]))
+            missingValue = False
     del lines
     return clean
 
@@ -234,6 +244,7 @@ def merge_stops(stops):
                     common_locs.append(point)
     return new_stops, common_locs
 
+
 def main(argv):
 
     # Collect the argCount for argument checking
@@ -293,7 +304,7 @@ def main(argv):
                 pos3 = final[int(idx/2)]
                 if get_distance(pos1, pos2) > 200:
                     result = get_degrees(pos1, pos2, pos3)
-                    if abs(result[0]) > 65 and ((abs(float(pos1.latitude) - float(pos2.latitude)) * 364000) > 50 and (abs(float(pos1.longitude) - float(pos2.longitude)) * 288200 > 50)):
+                    if abs(result[0]) > 65 and ((abs(float(pos1.latitude) - float(pos2.latitude)) * 364000) > 50 and abs(float(pos1.longitude) - float(pos2.longitude)) * 288200 > 50):
                         temp_array = final[idx-1:idx2+1]
                         nf.append((not_turn, "not"))
                         nf.append((temp_array, result[1]))
@@ -354,6 +365,7 @@ def main(argv):
         emit_common_sign(fp_out, item)
 
     emit_trailer(fp_out)
+
 
 if __name__ == "__main__":
     main(sys.argv)
