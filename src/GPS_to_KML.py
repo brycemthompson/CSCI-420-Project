@@ -191,6 +191,8 @@ def get_degrees(pos_1, pos_2, pos_3):
         return temp, "right"
     elif float(pos_2.angle) > float(pos_1.angle) > float(pos_3.angle) or float(pos_3.angle) > float(pos_2.angle) > float(pos_1.angle):
         return temp, "left"
+    else:
+        return temp, "left"
 
 
 def get_time_diff(prev_point, second_point):
@@ -298,10 +300,6 @@ def main(argv):
                         not_turn = []
                         idx = idx2
                         idx2 = idx - 1
-                        print('\n' + result[1])
-                        print('pos1: ' + pos1.angle)
-                        print('pos2: ' + pos2.angle)
-                        print("diff: " + str(result[0]))
                     else:
                         not_turn.append(final[idx])
                         idx += 1
