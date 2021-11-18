@@ -1,4 +1,5 @@
 import sys
+from math import sqrt
 
 # We created a class to describe the various parts of a 'Point'
 # This includes the latitude, longitude, speed, angle, color, and time of that point
@@ -26,6 +27,24 @@ def emit_header(fp_out):
 # Following the header, we have various 'styles' that get used throughtout the kml file
 # This function emits those styles to be used later
 def emit_styles(fp_out):
+    fp_out.write("    <Style id=\"greenLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>5014F032</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>5014F032</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
+    fp_out.write("    <Style id=\"blueLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>ffff0000</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>ffff0000</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
     fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
     fp_out.write("      <LineStyle>\n")
     fp_out.write("        <color>5014F0E6</color>\n")
@@ -208,6 +227,62 @@ def calculate_lat_long(clean):
     return final
 
 
+# Taking two points, find the total distance, in feet between them. THIS IS NOT THE EXACT DISTANCE BETWEEN THEM
+# It is the total of the difference in latitude and the different in longitude
+def get_distance(pos_1, pos_2):
+    lat_diff = abs(float(pos_1.latitude) - float(pos_2.latitude)) * 364000
+    long_diff = abs(float(pos_1.longitude) - float(pos_2.longitude)) * 288200
+    return long_diff + lat_diff
+
+
+# Taking in three points, determine if there is a turn from point one to point two that passes through point 3
+# It calculate the angle of that turn and if the turn is a left turn or right turn
+def get_degrees(pos_1, pos_2, pos_3):
+    temp = (float(pos_1.angle) - float(pos_2.angle) + 180 + 360) % 360 - 180
+    if float(pos_1.angle) < float(pos_3.angle) < float(pos_2.angle):
+        return temp, "right"
+    elif float(pos_2.angle) < float(pos_3.angle) < float(pos_1.angle):
+        return temp, "left"
+    elif float(pos_3.angle) > float(pos_1.angle) > float(pos_2.angle) or float(pos_1.angle) > float(pos_2.angle) > float(pos_3.angle):
+        return temp, "right"
+    elif float(pos_2.angle) > float(pos_1.angle) > float(pos_3.angle) or float(pos_3.angle) > float(pos_2.angle) > float(pos_1.angle):
+        return temp, "left"
+    else:
+        return temp, "left"
+
+
+# Returns the difference in time between two points to help determine stops
+def get_time_diff(prev_point, second_point):
+    return abs(float(second_point.time) - float(prev_point.time))
+
+
+# Try to append the given point (second_point) to the given list (stops)
+# We only append the given point, if there are not items in the list that are within 1000 feet of it
+def try_to_append(stops, second_point):
+    temp = (True, None)
+    for point in stops:
+        dist = get_distance(point, second_point)
+        if dist < 1000:
+            temp = (False, point)
+            break
+    if temp[0]:
+        stops.append(second_point)
+    return temp
+
+
+# This function checks the common_loc array and stops array and removes any stops
+# that are within 1000feet of any of the places in the common_loc array
+def remove_extra_stops(stops, common_loc):
+    for item in common_loc:
+        idx = 0
+        while idx < len(stops):
+            cur_stop = stops[idx]
+            if get_distance(cur_stop, item) < 1000:
+                stops.remove(cur_stop)
+            else:
+                idx += 1
+
+
 def main(argv):
     # Collect the argCount for argument checking
     argCount = len(argv)
@@ -253,17 +328,64 @@ def main(argv):
             argIdx += 1
 
     nf = []
+    stops = []
+    common_loc = []
     # for each file of gps data
     for final in list_of_lat_longs:
+
+        temp_stops = []
         not_turn = []
         idx = 0
         # go through each point. Attempt to locate turns
         while idx < len(final):
-            not_turn.append(final[idx])
+            idx2 = idx + 1
+            while idx2 < len(final):
+                pos1 = final[idx]
+                pos2 = final[idx2]
+                pos3 = final[int(idx/2)]
+                # We check for turns after 200 feet from one point to another
+                if get_distance(pos1, pos2) > 200:
+                    # check for a turn
+                    result = get_degrees(pos1, pos2, pos3)
+                    # If there is a turn, add all the points from idx to idx2 as a 'turn'
+                    if abs(result[0]) > 65 and ((abs(float(pos1.latitude) - float(pos2.latitude)) * 364000) > 50 and (abs(float(pos1.longitude) - float(pos2.longitude)) * 288200 > 50)):
+                        temp_array = final[idx-1:idx2+1]
+                        nf.append((not_turn, "not"))
+                        nf.append((temp_array, result[1]))
+                        not_turn = []
+                        idx = idx2
+                        idx2 = idx - 1
+                    # if not a turn, add the current idx to the array for 'not a turn'
+                    else:
+                        not_turn.append(final[idx])
+                        idx += 1
+                idx2 += 1
+
+            if idx2 >= len(final):
+                idx = idx2
             idx += 1
+        if not_turn:
+            nf.append((not_turn, "not"))
 
-
-        nf.append((not_turn, "not"))
+        idx = 0
+        prev_point = final[0]
+        second_point = final[0]
+        # go through the file again and determine if there are any stops
+        while idx < len(final):
+            current_point = final[idx]
+            if current_point.latitude == prev_point.latitude and current_point.longitude == prev_point.longitude:
+                second_point = current_point
+            else:
+                # check time between second point and prev point
+                # if you are in the same spot for 5 seconds or more, you are 'stopped' and get added to the 'temp_stops' array
+                time_diff = get_time_diff(prev_point, second_point)
+                if time_diff >= 180:
+                    try_to_append(common_loc, second_point)
+                elif time_diff >= 5:
+                    try_to_append(stops, second_point)
+                prev_point = current_point
+                second_point = current_point
+            idx += 1
 
     fp_out = open(arguments[-1], "w")
 
@@ -275,9 +397,30 @@ def main(argv):
     for item in nf:
         # print all the non-turns to kml file
         if item[1] == "not":
+            emit_placemarker_start(fp_out, "blueLineGreenPoly")
+            emit_coordinates(fp_out, item[0])
+            emit_placemarker_end(fp_out)
+        # print all the right turns to kml file
+        elif item[1] == "right":
             emit_placemarker_start(fp_out, "yellowLineGreenPoly")
             emit_coordinates(fp_out, item[0])
             emit_placemarker_end(fp_out)
+        # print all the left turns to kml file
+        elif item[1] == "left":
+            emit_placemarker_start(fp_out, "greenLineGreenPoly")
+            emit_coordinates(fp_out, item[0])
+            emit_placemarker_end(fp_out)
+
+
+    # Remove any overlapping stops/common_loc
+    remove_extra_stops(stops, common_loc)
+
+    # print all the stops to kml file
+    for item in stops:
+        emit_stop_sign(fp_out, item)
+    # print all the common locations to kml file
+    for item in common_loc:
+        emit_common_sign(fp_out, item)
 
     # print the trailer to kml file
     emit_trailer(fp_out)
