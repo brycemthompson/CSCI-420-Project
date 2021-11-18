@@ -1,7 +1,9 @@
 import sys
 
-# We created a class to describe the various parts of a 'Point'
-# This includes the latitude, longitude, speed, angle, color, and time of that point
+
+# Point class
+# Description: Helper class describing teh various parts of a 'Point', including the latitude, longitude, speed, angle,
+# color, and time instance of the point
 class Point:
     def __init__(self, latitude, longitude, speed, angle, time):
         self.latitude = latitude
@@ -11,123 +13,44 @@ class Point:
         self.time = time
 
 
-# This function outputs the start of a KML
-# It gets called first for  every run of the application
-def emit_header(fp_out):
-    fp_out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-    fp_out.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n")
-    fp_out.write("  <Document>\n")
-    fp_out.write("    <name>Paths</name>\n")
-    fp_out.write("    <description>Examples of paths. Note that the tessellate tag is by default\n")
-    fp_out.write("      set to 0. If you want to create tessellated lines, they must be authored\n")
-    fp_out.write("      (or edited) directly in KML.</description>\n")
+# calculate_lat_long function
+# Description: Helper function that takes in the clean data and converts it into our Point data type,
+# while also converting the given data into real 'latitude' and 'longitude' values
+def calculate_lat_long(clean):
+    final = []
+
+    # Loop through the clean values
+    for value in clean:
+        hold_num = float(value[0]) // 100
+        degrees = float(value[0]) % 100
+        degrees = degrees / 60
+
+        # Grab the longitude
+        if value[1] == "N":
+            long = str(hold_num + degrees)
+        else:
+            long = "-" + str(hold_num + degrees)
+
+        hold_num = float(value[2]) // 100
+        degrees = float(value[2]) % 100
+        degrees = degrees / 60
+
+        # Grab the latitude
+        if value[3] == "E":
+            lat = str(hold_num + degrees)
+        else:
+            lat = "-" + str(hold_num + degrees)
+
+        # Create a new point with the values and append to the final list.
+        final.append(Point(lat, long, value[4], value[5], value[6]))
+
+    del clean
+    return final
 
 
-# Following the header, we have various 'styles' that get used throughtout the kml file
-# This function emits those styles to be used later
-def emit_styles(fp_out):
-    fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
-    fp_out.write("      <LineStyle>\n")
-    fp_out.write("        <color>5014F0E6</color>\n")
-    fp_out.write("        <width>4</width>\n")
-    fp_out.write("      </LineStyle>\n")
-    fp_out.write("      <PolyStyle>\n")
-    fp_out.write("        <color>5014F0E6</color>\n")
-    fp_out.write("      </PolyStyle>\n")
-    fp_out.write("    </Style>\n")
-
-
-# This emits the start of a place marker, used specifically for the 'path'
-# that the GPS is tracking. It takes in a specific style to make the line, blue, green, or yellow.
-def emit_placemarker_start(fp_out, style):
-    fp_out.write("    <Placemark>\n")
-    fp_out.write("      <name>Absolute Extruded</name>\n")
-    fp_out.write("      <description>Transparent green wall with yellow outlines</description>\n")
-    fp_out.write("      <styleUrl>#" + style + "</styleUrl>\n")
-    fp_out.write("      <LineString>\n")
-    fp_out.write("        <extrude>1</extrude>\n")
-    fp_out.write("        <tessellate>1</tessellate>\n")
-    fp_out.write("        <altitudeMode>absolute</altitudeMode>\n")
-    fp_out.write("        <coordinates>  ")
-
-
-# This function adds each point in the line to  the kml file
-def emit_coordinates(fp_out, lines):
-    for item in lines:
-        fp_out.write(str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "\n")
-
-
-# This function ends the place marker, so that a new placemarker (for a new line) can be created
-def emit_placemarker_end(fp_out):
-    fp_out.write("        </coordinates>\n")
-    fp_out.write("      </LineString>\n")
-    fp_out.write("    </Placemark>\n")
-
-
-# This function takes in a point and outputs a placemark into the KML file
-# that represents a 'Red Stop'
-def emit_stop_sign(fp_out, item):
-    fp_out.write("    <Placemark>\n")
-    fp_out.write("        <description>Red PIN for A Stop</description>\n")
-    fp_out.write("        <Style id=\"normalPlacemark\">\n")
-    fp_out.write("            <IconStyle>\n")
-    fp_out.write("                <color>ff0000ff</color>\n")
-    fp_out.write("                    <Icon>\n")
-    fp_out.write("                        <href>http://maps.google.com/mapfiles/kml/paddle/1.png</href>\n")
-    fp_out.write("                    </Icon>\n")
-    fp_out.write("            </IconStyle>\n")
-    fp_out.write("        </Style>\n")
-    fp_out.write("        <Point>\n")
-    fp_out.write("            <coordinates>" + str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "</coordinates>\n")
-    fp_out.write("        </Point>\n")
-    fp_out.write("    </Placemark>\n")
-
-
-# This function takes in a point and outputs a placemark into the KML file
-# that represents a 'Blue Common Location'
-def emit_common_sign(fp_out, item):
-    fp_out.write("    <Placemark>\n")
-    fp_out.write("        <description>Blue PIN for A Common Location</description>\n")
-    fp_out.write("        <Style id=\"normalCommon\">\n")
-    fp_out.write("            <IconStyle>\n")
-    fp_out.write("                <color>ffff0000</color>\n")
-    fp_out.write("                    <Icon>\n")
-    fp_out.write("                        <href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>\n")
-    fp_out.write("                    </Icon>\n")
-    fp_out.write("            </IconStyle>\n")
-    fp_out.write("        </Style>\n")
-    fp_out.write("        <Point>\n")
-    fp_out.write("            <coordinates>" + str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "</coordinates>\n")
-    fp_out.write("        </Point>\n")
-    fp_out.write("    </Placemark>\n")
-
-
-# This function emits the end of the KML file
-def emit_trailer(fp_out):
-    fp_out.write("  </Document>\n")
-    fp_out.write("</kml>\n")
-
-
-# This function takes in a single file and
-# parses all the GPS data in that one file, and returns the data
-def read_and_parse(filename):
-    file = open(filename, "r")
-
-    # Remove the initial 5 lines
-    for line_idx in range(0, 5):
-        file.readline()
-
-    # Split and strip the values
-    contents = file.read()
-    contents_list = contents.split("\n")
-    stripped_list = []
-    for value in contents_list:
-        stripped_list.append(value.strip())
-    return stripped_list
-
-
-# This function takes in the raw data from the gps files and cleans it
-# removing lines that don't make sense and values that we dont need
+# clean_lines function
+# Description: Helper function that takes in the raw data from the gps files and cleans it by
+# removing lines that don't make sense and values that we don't need
 def clean_lines(lines):
     # Initialize values
     clean = []
@@ -142,7 +65,7 @@ def clean_lines(lines):
         temp = value.split(",")
         # If we have a GPRMC, then we use elements 3 and 5
         if temp[0] == "$GPRMC":
-            if len(temp) > 5: # Ensure the values exist
+            if len(temp) > 5:  # Ensure the values exist
                 curr_lat = float(temp[3])
                 curr_long = float(temp[5])
             else:
@@ -150,7 +73,7 @@ def clean_lines(lines):
                 curr_long = last_long
         # If we have a GPGGA, then we use elements 2 and
         elif temp[0] == "$GPGGA":
-            if len(temp) > 4: # Ensure the values exist
+            if len(temp) > 4:  # Ensure the values exist
                 curr_lat = float(temp[2])
                 curr_long = float(temp[4])
             else:
@@ -179,35 +102,132 @@ def clean_lines(lines):
     return clean
 
 
-# This function takes in the clean data and converts it into our Point data type,
-# while also converting the given data into real 'latitude' and 'longitude' values
-def calculate_lat_long(clean):
-    final = []
-    for value in clean:
-        hold_num = float(value[0]) // 100
-        degrees = float(value[0]) % 100
-        degrees = degrees / 60
-
-        if value[1] == "N":
-            long = str(hold_num + degrees)
-        else:
-            long = "-" + str(hold_num + degrees)
-
-        hold_num = float(value[2]) // 100
-        degrees = float(value[2]) % 100
-        degrees = degrees / 60
-
-        if value[3] == "E":
-            lat = str(hold_num + degrees)
-        else:
-            lat = "-" + str(hold_num + degrees)
-
-        final.append(Point(lat, long, value[4], value[5], value[6]))
-
-    del clean
-    return final
+# emit_common_sign function
+# Description: Helper function that takes in a point and outputs a place mark into the KML file
+# that represents a 'Blue Common Location'
+def emit_common_sign(fp_out, item):
+    fp_out.write("    <Placemark>\n")
+    fp_out.write("        <description>Blue PIN for A Common Location</description>\n")
+    fp_out.write("        <Style id=\"normalCommon\">\n")
+    fp_out.write("            <IconStyle>\n")
+    fp_out.write("                <color>ffff0000</color>\n")
+    fp_out.write("                    <Icon>\n")
+    fp_out.write("                        <href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href>\n")
+    fp_out.write("                    </Icon>\n")
+    fp_out.write("            </IconStyle>\n")
+    fp_out.write("        </Style>\n")
+    fp_out.write("        <Point>\n")
+    fp_out.write("            <coordinates>" + str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "</coordinates>\n")
+    fp_out.write("        </Point>\n")
+    fp_out.write("    </Placemark>\n")
 
 
+# emit_coordinates function
+# Description: Helper function that adds each point in the line to the KML file
+def emit_coordinates(fp_out, lines):
+    for item in lines:
+        fp_out.write(str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "\n")
+
+
+# emit_header function
+# Description: Helper function called first for every run that outputs the start of a KML
+def emit_header(fp_out):
+    fp_out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+    fp_out.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n")
+    fp_out.write("  <Document>\n")
+    fp_out.write("    <name>Paths</name>\n")
+    fp_out.write("    <description>Examples of paths. Note that the tessellate tag is by default\n")
+    fp_out.write("      set to 0. If you want to create tessellated lines, they must be authored\n")
+    fp_out.write("      (or edited) directly in KML.</description>\n")
+
+
+# emit_placemarker_end function
+# Description: Helper function that ends the place marker, so that a new place marker (for a new line) can be created
+def emit_placemarker_end(fp_out):
+    fp_out.write("        </coordinates>\n")
+    fp_out.write("      </LineString>\n")
+    fp_out.write("    </Placemark>\n")
+
+
+# emit_placemarker_start function
+# Description: Helper function that emits the start of a place marker, used specifically for the 'path'
+# that the GPS is tracking. It takes in a specific style to make the line, blue, green, or yellow.
+def emit_placemarker_start(fp_out, style):
+    fp_out.write("    <Placemark>\n")
+    fp_out.write("      <name>Absolute Extruded</name>\n")
+    fp_out.write("      <description>Transparent green wall with yellow outlines</description>\n")
+    fp_out.write("      <styleUrl>#" + style + "</styleUrl>\n")
+    fp_out.write("      <LineString>\n")
+    fp_out.write("        <extrude>1</extrude>\n")
+    fp_out.write("        <tessellate>1</tessellate>\n")
+    fp_out.write("        <altitudeMode>absolute</altitudeMode>\n")
+    fp_out.write("        <coordinates>  ")
+
+
+# emit_stop_sign function
+# Description: Helper function that takes in a point and outputs a place mark into the KML file
+# that represents a 'Red Stop'
+def emit_stop_sign(fp_out, item):
+    fp_out.write("    <Placemark>\n")
+    fp_out.write("        <description>Red PIN for A Stop</description>\n")
+    fp_out.write("        <Style id=\"normalPlacemark\">\n")
+    fp_out.write("            <IconStyle>\n")
+    fp_out.write("                <color>ff0000ff</color>\n")
+    fp_out.write("                    <Icon>\n")
+    fp_out.write("                        <href>http://maps.google.com/mapfiles/kml/paddle/1.png</href>\n")
+    fp_out.write("                    </Icon>\n")
+    fp_out.write("            </IconStyle>\n")
+    fp_out.write("        </Style>\n")
+    fp_out.write("        <Point>\n")
+    fp_out.write("            <coordinates>" + str(item.latitude) + "," + str(item.longitude) + "," + str(item.speed) + "</coordinates>\n")
+    fp_out.write("        </Point>\n")
+    fp_out.write("    </Placemark>\n")
+
+
+# emit_styles function
+# Description: Following the header, we have various 'styles' that get used throughout the KML file which are emitted
+# to be used later
+def emit_styles(fp_out):
+    fp_out.write("    <Style id=\"yellowLineGreenPoly\">\n")
+    fp_out.write("      <LineStyle>\n")
+    fp_out.write("        <color>5014F0E6</color>\n")
+    fp_out.write("        <width>4</width>\n")
+    fp_out.write("      </LineStyle>\n")
+    fp_out.write("      <PolyStyle>\n")
+    fp_out.write("        <color>5014F0E6</color>\n")
+    fp_out.write("      </PolyStyle>\n")
+    fp_out.write("    </Style>\n")
+
+
+# emit_trailer function
+# Description: Helper function that emits the end of the KML file
+def emit_trailer(fp_out):
+    fp_out.write("  </Document>\n")
+    fp_out.write("</kml>\n")
+
+
+# read_and_parse function
+# Description: Helper function takes in a single file and parses all the GPS data in that one file, and returns the data
+def read_and_parse(filename):
+    file = open(filename, "r")
+
+    # Remove the initial 5 lines
+    for line_idx in range(0, 5):
+        file.readline()
+
+    # Split and strip the values
+    contents = file.read()
+    contents_list = contents.split("\n")
+    stripped_list = []
+
+    # Loop through and append the stripped values
+    for value in contents_list:
+        stripped_list.append(value.strip())
+    return stripped_list
+
+
+# main function
+# Description: Main function that handles the running parameters and calls to the helper functions
 def main(argv):
     # Collect the argCount for argument checking
     argCount = len(argv)
@@ -262,12 +282,11 @@ def main(argv):
             not_turn.append(final[idx])
             idx += 1
 
-
         nf.append((not_turn, "not"))
 
     fp_out = open(arguments[-1], "w")
 
-    # output some Kml headers and styles
+    # output some KML headers and styles
     emit_header(fp_out)
     emit_styles(fp_out)
 
@@ -281,6 +300,7 @@ def main(argv):
 
     # print the trailer to kml file
     emit_trailer(fp_out)
+
 
 if __name__ == "__main__":
     main(sys.argv)
